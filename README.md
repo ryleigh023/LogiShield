@@ -90,28 +90,28 @@ To demonstrate local Kubernetes scaling, use the provided manifests:
 4. Expose the frontend service: `minikube service frontend`
 
 ---
-## Screenshots
+
+## Website Screenshots
 
 <p align="center">
-  <img src="freight1.jpeg" width="700"/>
+  <img src="screenshots/freight1.jpeg" width="700">
 </p>
 
 <p align="center">
-  <img src="freight2.jpeg" width="700"/>
+  <img src="screenshots/freight2.jpeg" width="700">
 </p>
 
 <p align="center">
-  <img src="freight3.jpeg" width="700"/>
+  <img src="screenshots/freight3.jpeg" width="700">
 </p>
 
 <p align="center">
-  <img src="freight4.jpeg" width="700"/>
+  <img src="screenshots/freight4.jpeg" width="700">
 </p>
 
 <p align="center">
-  <img src="freight5.jpeg" width="700"/>
+  <img src="screenshots/freight5.jpeg" width="700">
 </p>
-
 
 ## Demo Video
 Gdrive link: https://drive.google.com/file/d/1pq6k6bvqLYcBmUvfC6-Ch9oJ2nWghMuQ/view?usp=sharing
