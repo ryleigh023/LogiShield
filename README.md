@@ -6,6 +6,7 @@ By team Guppy
 
 Welcome to FreightSentinel, the modern, event-driven AI platform that predicts shipment delays, models risk factors dynamically using an advanced agent trace, and provides actionable recommendations to reroute or expedite cargo before delays happen.
 
+Try it out: https://drive.google.com/file/d/1pq6k6bvqLYcBmUvfC6-Ch9oJ2nWghMuQ/view?usp=sharing
 ---
 
 ##  Problem Statement
@@ -89,38 +90,17 @@ To demonstrate local Kubernetes scaling, use the provided manifests:
 4. Expose the frontend service: `minikube service frontend`
 
 ---
+## Screenshots
+blob:https://web.whatsapp.com/00f26e64-e2de-4dcd-ae9b-15553306e253
+blob:https://web.whatsapp.com/f821b209-b2e1-484a-b0d4-07c15ad4dbd8
+blob:https://web.whatsapp.com/73c81531-252c-4a56-af66-d617f7bbeba0
+blob:https://web.whatsapp.com/4eaa87a2-e7a2-405e-8000-0c7463fa8ed4
+blob:https://web.whatsapp.com/1fa12d74-a160-4cbe-9ee4-3aa751552e5b
 
-## 🎥 Demo Video Script & Walkthrough
 
-**For Judges:** Follow this exact script to showcase all required functionalities in your hackathon video.
+## Demo Video
+Gdrive link: https://drive.google.com/file/d/1pq6k6bvqLYcBmUvfC6-Ch9oJ2nWghMuQ/view?usp=sharing
 
-1. **Introduction (0:00 - 0:15)**
-   - "Welcome to FreightSentinel. This is an AI-powered logistics platform predicting shipment risks."
-   - *Action:* Show the stunning, minimalistic "Zen" login screen.
-
-2. **Platform Security & MFA (0:15 - 0:45)**
-   - "We prioritize security. I'll log in using our Multi-Factor Authentication flow."
-   - *Action:* Click **Continue as Demo User** to trigger the OTP flow. Enter the demo code provided on-screen.
-   - "This generates a JWT. Also, notice PII like phone numbers are encrypted in the DB and never sent to the frontend."
-
-3. **Event-Driven Architecture & Scalability (0:45 - 1:15)**
-   - "Here is the main dashboard. It's event-driven. We have two Celery workers running in parallel, connected via Redis."
-   - *Action:* Point to the "Ops Indicator" at the top right showing "Healthy | 2 workers | 0 queued".
-
-4. **Running the Analysis (1:15 - 1:45)**
-   - "Let's analyze a high-risk shipment."
-   - *Action:* Click the Maersk or MSC shipment.
-   - "FastAPI queues the task in Redis. Our worker picks it up using an atomic, idempotent lock. You can see the agent's live reasoning streaming directly via Server-Sent Events (SSE)!"
-   - *Action:* Watch the "Agent Reasoning · Live" panel populate with THOUGHT and ACTION steps.
-
-5. **Maintainability & Code Structure (1:45 - 2:30)**
-   - "Under the hood, we strictly follow MVC. We also built an explicit Singleton for our database connection."
-   - *Action:* Briefly flash `backend/app/db/database.py` showing the `DatabaseSingleton` class and `backend/app/api/routes` showing the controller structure.
-
-6. **Observability (2:30 - 3:00)**
-   - "Finally, all of this is fully observable."
-   - *Action:* Open `http://localhost:3001` (Grafana) to show the metrics, or switch to the **Logs** tab in the UI to demonstrate distributed tracing.
-
-7. **Conclusion**
+**Conclusion**
    - "FreightSentinel: Secure, scalable, and beautifully designed. Thank you."
 
