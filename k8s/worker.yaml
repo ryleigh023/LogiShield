@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: worker
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: worker
+  template:
+    metadata:
+      labels:
+        app: worker
+    spec:
+      containers:
+      - name: worker
+        image: freightsentinel-backend:latest
+        imagePullPolicy: Never
+        command: ["celery", "-A", "app.worker.celery_app", "worker", "--loglevel=info", "-Q", "freight_tasks", "-c", "2"]
+        env:
+        - name: DATABASE_URL
+          value: postgresql+asyncpg://freight:freight123@postgres:5432/freightsentinel_db
+        - name: REDIS_URL
+          value: redis://redis:6379/0
+        - name: SECRET_KEY
+          value: supersecret-change-me
+        - name: JWT_SECRET
+          value: supersecret-change-me
+        - name: FERNET_KEY
+          value: "2K7vT4w3b8d5rYc9mQzWxN1oPp6uI0sS3fG7hJkLaZc="

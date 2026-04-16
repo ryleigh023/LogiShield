@@ -1,0 +1,169 @@
+services:
+
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: freightsentinel_db
+      POSTGRES_USER: freight
+      POSTGRES_PASSWORD: freight123
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - freightnet
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U freight"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    networks:
+      - freightnet
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql+asyncpg://freight:freight123@postgres:5432/freightsentinel_db
+      REDIS_URL: redis://redis:6379/0
+      SECRET_KEY: supersecret-change-me
+      JWT_SECRET: supersecret-change-me
+      FERNET_KEY: "2K7vT4w3b8d5rYc9mQzWxN1oPp6uI0sS3fG7hJkLaZc="
+      ENVIRONMENT: development
+      REQUIRE_AUTH: "true"
+      OPENAI_API_KEY: ""
+      OPENWEATHER_API_KEY: ""
+      NEWS_API_KEY: ""
+      GOOGLE_CLIENT_ID: "105233633128-jlq4koe7mdbbbt8imu4bi6mb1r2053sl.apps.googleusercontent.com"
+      MAIL_USERNAME: ""
+      MAIL_PASSWORD: ""
+      MAIL_FROM: ""
+      MAIL_SERVER: smtp.gmail.com
+    depends_on:
+      postgres: { condition: service_healthy }
+      redis:    { condition: service_healthy }
+    networks:
+      - freightnet
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000
+    labels:
+      logging: "promtail"
+      logging_jobname: "backend"
+
+  # Two independent worker containers so we can show parallel pickup.
+  worker1:
+    build: ./backend
+    environment:
+      DATABASE_URL: postgresql+asyncpg://freight:freight123@postgres:5432/freightsentinel_db
+      REDIS_URL: redis://redis:6379/0
+      SECRET_KEY: supersecret-change-me
+      JWT_SECRET: supersecret-change-me
+      FERNET_KEY: "2K7vT4w3b8d5rYc9mQzWxN1oPp6uI0sS3fG7hJkLaZc="
+      OPENAI_API_KEY: ""
+      OPENWEATHER_API_KEY: ""
+      NEWS_API_KEY: ""
+    depends_on:
+      postgres: { condition: service_healthy }
+      redis:    { condition: service_healthy }
+    networks:
+      - freightnet
+    command: celery -A app.worker.celery_app worker --loglevel=info -Q freight_tasks -n worker1@%h -c 2
+    labels:
+      logging: "promtail"
+      logging_jobname: "worker"
+
+  worker2:
+    build: ./backend
+    environment:
+      DATABASE_URL: postgresql+asyncpg://freight:freight123@postgres:5432/freightsentinel_db
+      REDIS_URL: redis://redis:6379/0
+      SECRET_KEY: supersecret-change-me
+      JWT_SECRET: supersecret-change-me
+      FERNET_KEY: "2K7vT4w3b8d5rYc9mQzWxN1oPp6uI0sS3fG7hJkLaZc="
+      OPENAI_API_KEY: ""
+      OPENWEATHER_API_KEY: ""
+      NEWS_API_KEY: ""
+    depends_on:
+      postgres: { condition: service_healthy }
+      redis:    { condition: service_healthy }
+    networks:
+      - freightnet
+    command: celery -A app.worker.celery_app worker --loglevel=info -Q freight_tasks -n worker2@%h -c 2
+    labels:
+      logging: "promtail"
+      logging_jobname: "worker"
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "5173:80"
+    networks:
+      - freightnet
+    depends_on:
+      - backend
+    environment:
+      VITE_API_URL: http://localhost:8000
+
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    networks:
+      - freightnet
+    depends_on:
+      - backend
+
+  loki:
+    image: grafana/loki:2.9.8
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/config.yml
+    volumes:
+      - ./monitoring/loki-config.yml:/etc/loki/config.yml:ro
+    networks:
+      - freightnet
+
+  promtail:
+    image: grafana/promtail:2.9.8
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./monitoring/promtail-config.yml:/etc/promtail/config.yml:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+    command: -config.file=/etc/promtail/config.yml
+    networks:
+      - freightnet
+    depends_on:
+      - loki
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3001:3000"
+    networks:
+      - freightnet
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+      GF_AUTH_ANONYMOUS_ORG_ROLE: Admin
+    volumes:
+      - ./monitoring/grafana/datasources:/etc/grafana/provisioning/datasources:ro
+      - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards:ro
+    depends_on:
+      - prometheus
+      - loki
+
+volumes:
+  pgdata:
+
+networks:
+  freightnet:
+    driver: bridge

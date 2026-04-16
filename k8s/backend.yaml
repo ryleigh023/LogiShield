@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+      - name: backend
+        image: freightsentinel-backend:latest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 8000
+        env:
+        - name: DATABASE_URL
+          value: postgresql+asyncpg://freight:freight123@postgres:5432/freightsentinel_db
+        - name: REDIS_URL
+          value: redis://redis:6379/0
+        - name: SECRET_KEY
+          value: supersecret-change-me
+        - name: JWT_SECRET
+          value: supersecret-change-me
+        - name: FERNET_KEY
+          value: "2K7vT4w3b8d5rYc9mQzWxN1oPp6uI0sS3fG7hJkLaZc="
+        - name: ENVIRONMENT
+          value: development
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend
+spec:
+  selector:
+    app: backend
+  ports:
+  - port: 8000

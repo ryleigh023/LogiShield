@@ -1,0 +1,54 @@
+version: "3.9"
+networks:
+  freight_net:
+    driver: bridge
+
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: freightdb
+      POSTGRES_USER: freight
+      POSTGRES_PASSWORD: freight123
+    networks: [freight_net]
+    ports: ["5432:5432"]
+
+  redis:
+    image: redis:7-alpine
+    networks: [freight_net]
+    ports: ["6379:6379"]
+
+  backend:
+    build: ./
+    env_file: ./.env
+    ports: ["8000:8000"]
+    depends_on: [db, redis]
+    networks: [freight_net]
+
+  worker1:
+    build: ./
+    command: celery -A app.worker.celery_app worker --loglevel=info -Q freight_tasks -c 1 -n worker1@%h
+    env_file: ./.env
+    depends_on: [db, redis]
+    networks: [freight_net]
+
+  worker2:
+    build: ./
+    command: celery -A app.worker.celery_app worker --loglevel=info -Q freight_tasks -c 1 -n worker2@%h
+    env_file: ./.env
+    depends_on: [db, redis]
+    networks: [freight_net]
+
+  prometheus:
+    image: prom/prometheus
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports: ["9090:9090"]
+    networks: [freight_net]
+
+  grafana:
+    image: grafana/grafana
+    ports: ["3000:3000"]
+    networks: [freight_net]
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: admin
