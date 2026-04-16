@@ -1,20 +1,23 @@
-# FreightSentinel 🚢
+# FreightSentinel 
+Made for HackStrom'26
+By team Guppy
+
 **AI-Powered Shipment Risk Platform**
 
 Welcome to FreightSentinel, the modern, event-driven AI platform that predicts shipment delays, models risk factors dynamically using an advanced agent trace, and provides actionable recommendations to reroute or expedite cargo before delays happen.
 
 ---
 
-## 🎯 Problem Statement
+##  Problem Statement
 Global logistics are opaque, rigid, and highly vulnerable to cascading delays. A storm in the Pacific or a sudden strike at a major European port can strand millions of dollars of cargo. Supply chain operators currently rely on disparate systems, static ETA models, and manual emails to track risks. There is no single "pane of glass" that unifies real-time predictive analytics with immediate operational action.
 
-## 💡 Solution
+##  Solution
 FreightSentinel provides a perfectly centered, ultra-minimalistic "Zen" dashboard that gives operators real-time visibility into their shipments. 
 When an operator triggers a risk analysis, our event-driven microservices architecture dispatches an atomic task to background workers. These workers run an **Agentic AI Workflow** that pulls real-time weather, port congestion, and news data, calculating a comprehensive risk score and returning **explainable AI factors** (SHAP-style) alongside concrete recommendations.
 
 ---
 
-## 🛠 Tech Stack
+##  Tech Stack
 - **Frontend**: React 19, Vite, Framer Motion (for fluid iOS-style animations), TailwindCSS.
 - **Backend**: FastAPI (Python), Celery (Distributed Async Workers).
 - **Data & Queueing**: PostgreSQL 15, Redis 7 (Message Broker & Distributed Locks).
@@ -23,7 +26,7 @@ When an operator triggers a risk analysis, our event-driven microservices archit
 
 ---
 
-## 🏗 Architecture & Code Quality Rubric
+## Architecture & Code Quality Rubric
 
 ### Model-View-Controller (MVC) Pattern
 Our application clearly separates concerns:
@@ -56,7 +59,7 @@ The API is cleanly structured using FastAPI routers, grouped by domain (`/api/v1
 
 ---
 
-## 🚀 How to Run
+##  How to Run
 
 ### Option 1: Docker Compose (Recommended)
 1. Ensure Docker is running.
@@ -121,4 +124,3 @@ To demonstrate local Kubernetes scaling, use the provided manifests:
 7. **Conclusion**
    - "FreightSentinel: Secure, scalable, and beautifully designed. Thank you."
 
-Happy Shipping! 🚢
