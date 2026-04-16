@@ -91,11 +91,26 @@ To demonstrate local Kubernetes scaling, use the provided manifests:
 
 ---
 ## Screenshots
-blob:https://web.whatsapp.com/00f26e64-e2de-4dcd-ae9b-15553306e253
-blob:https://web.whatsapp.com/f821b209-b2e1-484a-b0d4-07c15ad4dbd8
-blob:https://web.whatsapp.com/73c81531-252c-4a56-af66-d617f7bbeba0
-blob:https://web.whatsapp.com/4eaa87a2-e7a2-405e-8000-0c7463fa8ed4
-blob:https://web.whatsapp.com/1fa12d74-a160-4cbe-9ee4-3aa751552e5b
+
+<p align="center">
+  <img src="freight1.jpeg" width="700"/>
+</p>
+
+<p align="center">
+  <img src="freight2.jpeg" width="700"/>
+</p>
+
+<p align="center">
+  <img src="freight3.jpeg" width="700"/>
+</p>
+
+<p align="center">
+  <img src="freight4.jpeg" width="700"/>
+</p>
+
+<p align="center">
+  <img src="freight5.jpeg" width="700"/>
+</p>
 
 
 ## Demo Video
